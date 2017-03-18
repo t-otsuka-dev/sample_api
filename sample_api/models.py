@@ -1,3 +1,5 @@
+# --*-- coding: utf-8  --*--
+from encodings.utf_8 import encode
 from django.db import models
 
 
@@ -19,3 +21,9 @@ class Entry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(choices=STATUS_SET, default=STATUS_DRAFT, max_length=8)
     author = models.ForeignKey(User, related_name='entries')
+
+
+class Affi(models.Model):
+    group = models.CharField(max_length=50)
+    title = models.CharField(max_length=128)
+    url = models.TextField()
