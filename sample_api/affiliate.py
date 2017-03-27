@@ -1,14 +1,12 @@
 # --*-- coding: utf-8  --*--
 
 import json
-import sys
 import urllib
 import bottlenose
 from bs4 import BeautifulSoup
 
 class SearchKeyword:
     def get_amazon(self, keyword):
-
         """
         AmazonAPI
         :param keyword: iphone
@@ -41,16 +39,28 @@ class SearchKeyword:
         :return: all
         """
 
-        url = 'http://shopping.yahooapis.jp/ShoppingWebService/V1/json/itemSearch?'
+        url = 'http://shopping.yahooapis.jp/ShoppingWebService/V1/itemSearch?'
         appid = 'dj0zaiZpPVp2YzVCdlpaa3BxTyZzPWNvbnN1bWVyc2VjcmV0Jng9MWM-'
         contents = url + 'appid=' + appid + '&query=' + keyword
-        result = urllib.request.urlopen(contents)
-        response = json.loads(result.read().decode('utf8'))
+        response = urllib.request.urlopen(contents)
+        #response = json.loads(result.read().decode('utf8'))
 
+        soup = BeautifulSoup(response, "lxml")
+
+        contents = soup.find_all("Url")
+
+        url_list = list()
+        for urls in contents:
+            url_list.append(str(urls))
+
+        res = json.dumps(url_list, ensure_ascii=False)
 
         contents = response["ResultSet"]["0"]["Result"]
 
-        res = json.dumps(contents, ensure_ascii=False)
+        #res = json.dumps(contents, ensure_ascii=False)
+        print(url_list)
+        print(res)
+        print(type(res))
 
         return res
 

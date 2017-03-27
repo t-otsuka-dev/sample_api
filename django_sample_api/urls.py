@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # sample_api.urlsをincludeする
     url(r'^api/', include(sample_api_router.urls)),
+    url(r'^affi$', views.amazon_list),
     url(r'^affi/amazon$', views.amazon_list),
     url(r'^affi/yahoo$', views.yahoo_list),
     url(r'^affi/itunes$', views.itunes_list),

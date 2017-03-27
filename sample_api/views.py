@@ -13,30 +13,47 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 
 
+
+
 def amazon_list(request):
 
-    #検索キーワード設定（get値からなど）※今回は固定
-    keyword = 'iphone'
+    if "keyword" in request.GET:
+        # query_paramが指定されている場合の処理
+        keyword = request.GET.get("keyword")
+    else:
+        # query_paramが指定されていない場合の処理
+        return HttpResponse('<h1>Param Not Found</h1>')
 
     result = SearchKeyword.get_amazon('self', keyword)
     return HttpResponse(result)
 
 def yahoo_list(request):
 
-    #検索キーワード設定（get値からなど）※今回は固定
-    keyword = 'iphone'
+    if "keyword" in request.GET:
+        # query_paramが指定されている場合の処理
+        keyword = request.GET.get("keyword")
+    else:
+        # query_paramが指定されていない場合の処理
+        return HttpResponse('<h1>Param Not Found</h1>')
 
     result = SearchKeyword.get_yahoo('self', keyword)
     return HttpResponse(result)
 
 def itunes_list(request):
 
-    #検索キーワード設定（get値からなど）※今回は固定
-    keyword = 'iphone'
+    if "keyword" in request.GET:
+        # query_paramが指定されている場合の処理
+        keyword = request.GET.get("keyword")
+    else:
+        # query_paramが指定されていない場合の処理
+        return HttpResponse('<h1>Param Not Found</h1>')
 
     result = SearchKeyword.get_itunes('self', keyword)
     return  HttpResponse(result)
 
+
+
+# 以降今回のAPIには関係ない
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
