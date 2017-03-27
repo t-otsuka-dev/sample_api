@@ -41,28 +41,29 @@ class SearchKeyword:
 
         url = 'http://shopping.yahooapis.jp/ShoppingWebService/V1/itemSearch?'
         appid = 'dj0zaiZpPVp2YzVCdlpaa3BxTyZzPWNvbnN1bWVyc2VjcmV0Jng9MWM-'
-        contents = url + 'appid=' + appid + '&query=' + keyword
-        response = urllib.request.urlopen(contents)
+        contents = url + 'appid=' + appid + '&query=' + urllib.parse.quote(keyword)
+        result = urllib.request.urlopen(contents)
         #response = json.loads(result.read().decode('utf8'))
 
-        soup = BeautifulSoup(response, "lxml")
+        return result
 
+        #soup = BeautifulSoup(response, "lxml")
+
+        '''
         contents = soup.find_all("Url")
 
         url_list = list()
         for urls in contents:
             url_list.append(str(urls))
-
         res = json.dumps(url_list, ensure_ascii=False)
+        '''
+        #res = json.dumps(soup, ensure_ascii=False)
 
-        contents = response["ResultSet"]["0"]["Result"]
+        #contents = response["ResultSet"]["0"]["Result"]
 
         #res = json.dumps(contents, ensure_ascii=False)
-        print(url_list)
-        print(res)
-        print(type(res))
 
-        return res
+
 
         '''
         #Tag01_メモ
@@ -83,13 +84,13 @@ class SearchKeyword:
         :return: all
         """
         url = 'https://itunes.apple.com/search?'
-        contents = url + 'term=' + keyword + '&media=all&country=jp&lang=ja_jp'
+        contents = url + 'term=' + urllib.parse.quote(keyword) + '&media=all&country=jp&lang=ja_jp'
         result = urllib.request.urlopen(contents)
-        response = json.loads(result.read().decode('utf8'))
+        #response = json.loads(result.read().decode('utf8'))
 
-        res = json.dumps(response, ensure_ascii=False)
+        #res = json.dumps(response, ensure_ascii=False)
 
-        return res
+        return result
 
         '''
         #Tag01_メモ

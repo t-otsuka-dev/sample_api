@@ -13,6 +13,29 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 
 
+def affi_list(request):
+
+    if "keyword" in request.GET:
+        # query_paramが指定されている場合の処理
+        keyword = request.GET.get("keyword")
+    else:
+        # query_paramが指定されていない場合の処理
+        return HttpResponse('<h1>Param Not Found</h1>')
+
+    amazon = SearchKeyword.get_amazon('self', keyword)
+    yahoo = SearchKeyword.get_yahoo('self', keyword).read()
+    itunes = SearchKeyword.get_itunes('self', keyword).read()
+
+
+    print(type(amazon))
+    print(type(yahoo))
+    print(type(itunes))
+
+    result = {"amazon":amazon, "yahoo":yahoo, "itunes":itunes}
+
+    print(type(result))
+
+    return HttpResponse(result)
 
 
 def amazon_list(request):
