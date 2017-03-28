@@ -26,10 +26,10 @@ def affi_list(request):
 
     amazon = SearchKeyword.get_amazon('self', keyword)
     yahoo = SearchKeyword.get_yahoo('self', keyword)
-    itunes = SearchKeyword.get_itunes('self', keyword)
+    #itunes = SearchKeyword.get_itunes('self', keyword)
 
 
-    chain_map = collections.ChainMap(amazon, yahoo, itunes)
+    chain_map = collections.ChainMap(amazon, yahoo)
     url_list = dict(chain_map)
 
     if "sort" in request.GET:
