@@ -1,5 +1,5 @@
 # --*-- coding: utf-8  --*--
-from encodings.utf_8 import encode
+
 from django.db import models
 
 

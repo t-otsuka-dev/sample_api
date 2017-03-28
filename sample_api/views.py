@@ -1,12 +1,14 @@
 # --*-- coding: utf-8  --*--
 
 import json
-import django_filters
+import collections
+from sample_api import common
+
 
 from .models import User, Entry, Affi
 from .serializer import UserSerializer, EntrySerializer, AffiSerializer
-from sample_api.affiliate import SearchKeyword
-from rest_framework import viewsets, filters, status
+from .affiliate import SearchKeyword
+from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -23,19 +25,21 @@ def affi_list(request):
         return HttpResponse('<h1>Param Not Found</h1>')
 
     amazon = SearchKeyword.get_amazon('self', keyword)
-    yahoo = SearchKeyword.get_yahoo('self', keyword).read()
-    itunes = SearchKeyword.get_itunes('self', keyword).read()
+    yahoo = SearchKeyword.get_yahoo('self', keyword)
+    itunes = SearchKeyword.get_itunes('self', keyword)
 
 
-    print(type(amazon))
-    print(type(yahoo))
-    print(type(itunes))
+    chain_map = collections.ChainMap(amazon, yahoo, itunes)
+    url_list = dict(chain_map)
 
-    result = {"amazon":amazon, "yahoo":yahoo, "itunes":itunes}
+    if "sort" in request.GET:
+        sort = request.GET.get("sort")
+        contents = common.sort(url_list, sort)
+    else:
+        contents = common.sort(url_list, "Default")
 
-    print(type(result))
-
-    return HttpResponse(result)
+    res = json.dumps(contents, ensure_ascii=False)
+    return HttpResponse(res)
 
 
 def amazon_list(request):
@@ -48,7 +52,8 @@ def amazon_list(request):
         return HttpResponse('<h1>Param Not Found</h1>')
 
     result = SearchKeyword.get_amazon('self', keyword)
-    return HttpResponse(result)
+    res = json.dumps(result, ensure_ascii=False)
+    return HttpResponse(res)
 
 def yahoo_list(request):
 
@@ -60,7 +65,8 @@ def yahoo_list(request):
         return HttpResponse('<h1>Param Not Found</h1>')
 
     result = SearchKeyword.get_yahoo('self', keyword)
-    return HttpResponse(result)
+    res = json.dumps(result, ensure_ascii=False)
+    return HttpResponse(res)
 
 def itunes_list(request):
 
@@ -72,7 +78,8 @@ def itunes_list(request):
         return HttpResponse('<h1>Param Not Found</h1>')
 
     result = SearchKeyword.get_itunes('self', keyword)
-    return  HttpResponse(result)
+    res = json.dumps(result, ensure_ascii=False)
+    return  HttpResponse(res)
 
 
 
