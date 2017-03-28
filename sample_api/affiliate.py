@@ -29,8 +29,7 @@ class SearchKeyword:
                 point = item.find('points').text
 
             if item.find('amount') == None:
-                price = ''
-                price_point = point
+                continue
             else:
                 price = item.find('amount').text
                 price_point = str(int(item.find('amount').text)+int(point))
