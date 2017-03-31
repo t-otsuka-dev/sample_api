@@ -2,15 +2,16 @@
 
 import json
 import collections
+import simplejson
 from sample_api import common
-
-
 from .models import User, Entry, Affi
 from .serializer import UserSerializer, EntrySerializer, AffiSerializer
 from .affiliate import SearchKeyword
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from collections import OrderedDict
+
 
 from django.http import HttpResponse
 
@@ -26,19 +27,24 @@ def affi_list(request):
 
     amazon = SearchKeyword.get_amazon('self', keyword)
     yahoo = SearchKeyword.get_yahoo('self', keyword)
-    #itunes = SearchKeyword.get_itunes('self', keyword)
+    itunes = SearchKeyword.get_itunes('self', keyword)
 
 
-    chain_map = collections.ChainMap(amazon, yahoo)
+    chain_map = collections.ChainMap(amazon, yahoo, itunes)
     url_list = dict(chain_map)
 
     if "sort" in request.GET:
         sort = request.GET.get("sort")
-        contents = common.sort(url_list, sort)
+        contents = OrderedDict(common.sort(url_list, sort))
     else:
-        contents = common.sort(url_list, "Default")
+        contents = OrderedDict(common.sort(url_list, "Default"))
 
-    res = json.dumps(contents, ensure_ascii=False)
+    vals = list()
+    for v in contents.values():
+        vals.append(v)
+
+
+    res = json.dumps(vals, ensure_ascii=False)
     return HttpResponse(res)
 
 

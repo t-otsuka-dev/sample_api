@@ -16,29 +16,41 @@ class SearchKeyword:
 
 
         amazon = bottlenose.Amazon(ACCESS_KEY, SECRET_ACCESS_KEY, ASSOCIATE_TAG, Region="JP")
-        result = amazon.ItemSearch(Keywords=keyword, SearchIndex="All", ResponseGroup="Small, Offers")
+        result = amazon.ItemSearch(Keywords=keyword, SearchIndex="All", ResponseGroup="Medium, Offers")
         soup = BeautifulSoup(result, "lxml")
-        items = soup.findAll('item')
+        items = soup.findAll("item")
 
         url_list = {}
         i = 0
         for item in items:
-            if item.find('points') == None:
+            if item.find("points") == None:
                 point = '0'
             else:
-                point = item.find('points').text
+                point = item.find("points").text
 
-            if item.find('amount') == None:
+            if item.find("amount") == None:
                 continue
             else:
-                price = item.find('amount').text
-                price_point = str(int(item.find('amount').text)+int(point))
+                price = item.find("amount").text
+                price_point = str(int(item.find("amount").text)+int(point))
 
-            url_list[str(i)] = { "Title":item.find('title').text,
-                                 "Url":item.find('detailpageurl').text,
+            if item.find("mediumimage") == None:
+                image = ''
+            else:
+                image_tag = item.find("mediumimage")
+                if image_tag.find("url") == None:
+                    image = ''
+                else:
+                    image = image_tag.find("url").text
+
+
+            url_list[str(i)] = { "Title":item.find("title").text,
+                                 "Url":item.find("detailpageurl").text,
                                  "Price":price,
                                  "Point":point,
-                                 "PricePoint":price_point
+                                 "PricePoint":price_point,
+                                 "Image": image,
+                                 "APIType": 'Amazon'
                                  }
             i = i + 1
 
@@ -65,11 +77,19 @@ class SearchKeyword:
                 else:
                     point = v["Point"]["Amount"]
 
+                if v["Image"]["Medium"] == None:
+                    image = ''
+                else:
+                    image = v["Image"]["Medium"]
+
+
                 url_list[str(i)] = { "Title":v["Name"],
                                      "Url":v["Url"],
                                      "Price":v["Price"]["_value"],
                                      "Point":point,
-                                     "PricePoint": str(int(v["Price"]["_value"]) + int(v["Point"]["Amount"]))
+                                     "PricePoint": str(int(v["Price"]["_value"]) + int(v["Point"]["Amount"])),
+                                     "Image":image,
+                                     "APIType":'Yahoo'
                                      }
                 i = i + 1
 
@@ -107,12 +127,19 @@ class SearchKeyword:
                 point = round(int(item["collectionPrice"])*0.07)
                 price_point = str(int(item["collectionPrice"])+point)
 
+            if item["artworkUrl60"] == None:
+                continue
+            else:
+                image = item["artworkUrl60"]
+
             url_list[str(i)] = { "Title":str(title),
                                  "Url":str(urls),
                                  "Price":str(price),
                                  "Point":str(point),
-                                 "PricePoint": str(price_point)
-            }
+                                 "PricePoint": str(price_point),
+                                 "Image":str(image),
+                                 "APIType": 'iTunes'
+                                 }
             i = i + 1
 
         return url_list

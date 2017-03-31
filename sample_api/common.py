@@ -1,5 +1,6 @@
 # --*-- coding: utf-8  --*--
 
+from collections import OrderedDict
 
 
 def sort(dic, sort):
@@ -22,3 +23,9 @@ def sort(dic, sort):
         items = sorted(dic.items(), key=lambda x: int(x[1]['Price']))
 
     return items
+
+
+def support_odict_default(o):
+    if isinstance(o, OrderedDict):
+        return o.isoformat()
+    raise TypeError(repr(o) + " is not JSON serializable")
